@@ -45,27 +45,7 @@ pipeline {
             }
         }
 
-        stage('Install & Run with PM2') {
-            steps {
-                script {
-                    echo "Installing PM2 & starting the application..."
-                    sshagent([CREDENTIAL_ID]) {
-                        sh """
-                            ssh -o StrictHostKeyChecking=no ${DEPLOY_USER}@${DEPLOY_SERVER} '
-                            if [ -d "${DEPLOY_PATH}" ] then
-                                cd "${DEPLOY_PATH}" &&
-                                ls  -l
-                            else
-                                mkdir -p "${DEPLOY_PATH}"
-                                pwd
-                            fi
-                            
-                            exit'
-                        """
-                    }
-                }
-            }
-        }
+       
     }
 
     post {
