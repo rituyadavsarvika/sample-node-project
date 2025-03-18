@@ -20,14 +20,12 @@ pipeline {
         }
 
         stage('Build Application') {
-            steps {
                 steps {
                     nodejs('nodejs18') {
                         echo "Building Code"
                         sh 'npm run build'
                     }
                 }
-            }
         }
 
         stage('Deploy to Server') {
