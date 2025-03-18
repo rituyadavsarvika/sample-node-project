@@ -2,10 +2,10 @@ pipeline {
     agent { label 'jenkins-runner1' }
 
     environment {
-        DEPLOY_SERVER = "10.247.109.5"  
-        DEPLOY_USER = "jenkins" 
+        DEPLOY_SERVER = "10.247.109.112"  
+        DEPLOY_USER = "ubuntu" 
         DEPLOY_PATH = "/var/www/sample-node-project" 
-        CREDENTIAL_ID = "ssh-private-key" 
+        CREDENTIAL_ID ="app-server-ssh-key" 
     }
 
     stages {
@@ -23,7 +23,7 @@ pipeline {
                 steps {
                     nodejs('nodejs18') {
                         echo "Building Code"
-                        sh 'npm run build'
+                        #sh 'npm run build'
                     }
                 }
         }
@@ -52,11 +52,14 @@ pipeline {
                     sshagent([CREDENTIAL_ID]) {
                         sh """
                             ssh -o StrictHostKeyChecking=no ${DEPLOY_USER}@${DEPLOY_SERVER} '
-                            cd ${DEPLOY_PATH} &&
-                            npm install -g pm2 &&
-                            pm2 stop all || true &&
-                            pm2 start npm --name "sample-app" -- run start &&
-                            pm2 save &&
+                            if [ -d "${DEPLOY_PATH}" ] then
+                                cd "${DEPLOY_PATH}" &&
+                                ls  -l
+                            else
+                                mkdir -p "${DEPLOY_PATH}"
+                                pwd
+                            fi
+                            
                             exit'
                         """
                     }
