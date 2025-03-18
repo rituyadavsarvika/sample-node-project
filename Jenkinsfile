@@ -23,7 +23,7 @@ pipeline {
                 steps {
                     nodejs('nodejs18') {
                         echo "Building Code"
-                        #sh 'npm run build'
+                        
                     }
                 }
         }
